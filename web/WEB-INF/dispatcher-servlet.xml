@@ -1,0 +1,81 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans" 
+       xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+       xmlns:p="http://www.springframework.org/schema/p"
+       xmlns:context="http://www.springframework.org/schema/context" 
+       xmlns:mvc="http://www.springframework.org/schema/mvc"
+       xsi:schemaLocation="http://www.springframework.org/schema/mvc
+http://www.springframework.org/schema/mvc/spring-mvc-4.0.xsd
+http://www.springframework.org/schema/beans
+http://www.springframework.org/schema/beans/spring-beans-4.0.xsd
+http://www.springframework.org/schema/context
+http://www.springframework.org/schema/context/spring-context-4.0.xsd">
+    <mvc:default-servlet-handler/>
+    <context:component-scan base-package="br.com.obitecnologia.obi.controller"/> 
+    <mvc:annotation-driven/>
+    
+    <bean id="viewResolver"
+    class="org.springframework.web.servlet.view.InternalResourceViewResolver"
+    p:prefix="/WEB-INF/View/"
+    p:suffix=".jsp" />
+    
+    <bean id="propertyConfigurer"
+    class="org.springframework.beans.factory.config.PropertyPlaceholderConfigurer"
+    p:location="/WEB-INF/jdbc.properties" />
+
+   <bean id="dataSource" class="org.apache.commons.dbcp.BasicDataSource" destroy-method="close">
+   <property name="url" value="${jdbc.url}"/>
+   <property name="driverClassName" value="${jdbc.driverClassName}"/>
+   <property name="username" value="${jdbc.username}"/>
+   <property name="password" value="${jdbc.password}"/>
+   <property name="removeAbandoned" value="true"/>
+   <property name="initialSize" value="1"/>
+   <property name="maxActive" value="20"/>
+   </bean>
+
+   <!-- ADD PERSISTENCE SUPPORT HERE (jpa, hibernate, etc) -->
+
+   <bean id="validador" 
+   class="br.com.obitecnologia.obi.infra.validador.ValidadorImpl"/>
+   <bean id="geradorCodigo" 
+   class="br.com.obitecnologia.obi.infra.geradorcodigo.GeradorCodigoImpl">
+   <constructor-arg ref="dataSource"/>
+   </bean>
+   <bean id="geradorRelatorio" 
+   class="br.com.obitecnologia.obi.infra.geradorrelatorio.GeradorRelatorioImpl"/>
+   <bean id="daoEndereco" 
+   class="br.com.obitecnologia.obi.dao.implementacao.EnderecoDaoImpl">
+   <constructor-arg ref="dataSource"/>
+   <constructor-arg ref="geradorCodigo"/>
+   </bean>
+   <bean id="daoTelefone" 
+   class="br.com.obitecnologia.obi.dao.implementacao.TelefoneDaoImpl">
+   <constructor-arg ref="dataSource"/>
+   <constructor-arg ref="geradorCodigo"/>
+   </bean>
+   <bean id="daoLogin" 
+   class="br.com.obitecnologia.obi.dao.implementacao.LoginDaoImpl">
+   <constructor-arg ref="dataSource"/>
+   <constructor-arg ref="geradorCodigo"/>
+   </bean>
+   <bean id="daoEntidade" 
+   class="br.com.obitecnologia.obi.dao.implementacao.EntidadeDaoImpl">
+   <constructor-arg ref="dataSource"/>
+   <constructor-arg ref="geradorCodigo"/>
+   </bean>
+   <bean id="daoDoacaoDinheiro" 
+   class="br.com.obitecnologia.obi.dao.implementacao.DoacaoDinheiroDaoImpl">
+   <constructor-arg ref="dataSource"/>
+   <constructor-arg ref="geradorCodigo"/>
+   </bean>
+   <bean id="daoCupom" 
+   class="br.com.obitecnologia.obi.dao.implementacao.CupomDaoImpl">
+   <constructor-arg ref="dataSource"/>
+   <constructor-arg ref="geradorCodigo"/>
+   </bean>
+   <bean id="daoCadastrador" 
+   class="br.com.obitecnologia.obi.dao.implementacao.CadastradorDaoImpl">
+   <constructor-arg ref="dataSource"/>
+   <constructor-arg ref="geradorCodigo"/>
+   </bean>
+</beans>
